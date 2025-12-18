@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+
+feedbacks.txt
+spreads.log
+
+.cursor/
+.idea/
+.vscode/
+
