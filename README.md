@@ -1,214 +1,189 @@
 ## TarotTelegramBot
 
-Небольшой Telegram‑бот на Python для вытягивания и трактовки карт Таро.  
-Бот помогает вытянуть карту дня, сделать простой расклад и собрать обратную связь.
+A small Telegram bot in Python for drawing and interpreting Tarot cards.  
+The bot helps draw a card of the day, perform a simple spread, and collect feedback.
 
-Бот работает через библиотеку `python-telegram-bot` и запускается локально.
-
----
-
-## Что умеет бот
-
-- **Карта дня**
-  - Команда: `/card`
-  - Кнопка: **🃏 Карта дня**
-   - Вытягивает случайную карту и показывает общее значение и совет.
-
-- **Расклад из трёх карт**
-  - Команда: `/three`
-  - Кнопка: **🔮 Три карты**
-  - Даёт расклад «Прошлое / Настоящее / Будущее» из трёх разных карт.
-
-- **Карта на любовь**
-  - Команда: `/love`
-  - Кнопка: **❤️ На любовь**
-  - Вытягивает одну карту и предлагает смотреть её через призму отношений, чувств и партнёрства.
-
-- **Карта на работу и финансы**
-  - Команда: `/work`
-  - Кнопка: **💼 На работу**
-   - Вытягивает одну карту и фокусирует трактовку на карьере, проектах и деньгах (с отдельным акцентом на финансы).
-
-- **Расклад на месяц**
-  - Команда: `/month`
-  - Кнопка: **🗓 На месяц**
-  - Четыре карты: тема месяца, главный вызов, поддержка, результат/итоги.
-
-- **Расклад на ситуацию**
-  - Команда: `/situation` или `/situation ваш вопрос`
-  - Даёт три карты: что происходит, причина/корень, совет.
-  - Вопрос можно добавить текстом после команды — он попадёт в лог.
-
-- **Расклад на выбор**
-  - Команда: `/choice` или `/choice вариант А / вариант Б`
-  - Три карты: карта на первый вариант, карта на второй вариант и карта‑совет.
-
-- **Помощь**
-  - Команда: `/help`
-  - Показывает список всех команд и кратко объясняет, что они делают.
-
-- **Обратная связь**
-  - Команда: `/feedback ваш текст`
-  - Сохраняет отзыв в файл `feedbacks.txt` рядом с ботом (для автора бота).
+The bot works via the `python-telegram-bot` library and runs locally.
 
 ---
 
-## Как устроен код (по функциям)
+## Bot Features
 
-Файл с ботом: `bot.py`.
+- **Card of the Day**
+  - Command: `/card`
+  - Button: **🃏 Card of the Day**
+  - Draws a random card and shows its general meaning and advice.
 
-- **`TAROT_DECK`**
-  - Список карт Таро: каждая запись — это словарь с полями:
-    - `name` — название карты,
-    - `general` — общее значение,
-    - `love` — значение в любви и отношениях,
-    - `work` — значение в работе и самореализации,
-    - `finance` — значение в финансовой сфере,
-    - `advice` — общий совет карты.
-  - В примере есть несколько старших и младших арканов; структуру легко расширить.
+- **Three-Card Spread**
+  - Command: `/three`
+  - Button: **🔮 Three Cards**
+  - Provides a "Past / Present / Future" spread using three different cards.
 
-- **`TOKEN = os.environ.get("BOT_TOKEN")`**
-  - Бот берёт токен из переменной окружения `BOT_TOKEN`.
-  - Токен НЕ хранится в коде, чтобы его не залить случайно в открытый доступ.
+- **Love Card**
+  - Command: `/love`
+  - Button: **❤️ For Love**
+  - Draws one card and suggests viewing it through the lens of relationships, emotions, and partnership.
 
-- **`_main_keyboard()`**
-  - Внутренняя функция, создаёт красивую клавиатуру под полем ввода в Telegram.
-  - Возвращает `ReplyKeyboardMarkup` с кнопками:
-    - `🃏 Карта дня`
-    - `🔮 Три карты`
-    - `❤️ На любовь`
-    - `💼 На работу`
-  - Эту клавиатуру бот показывает в ответ на `/start`.
+- **Work & Finance Card**
+  - Command: `/work`
+  - Button: **💼 For Work**
+  - Draws one card and focuses the interpretation on career, projects, and money (with a separate emphasis on finances).
 
-- **`start(update, context)`**
-  - Обработчик команды `/start`.
-  - Приветствует пользователя, кратко описывает, что умеет бот.
-  - Отправляет сообщение с описанием режимов и сразу показывает основную клавиатуру.
+- **Monthly Spread**
+  - Command: `/month`
+  - Button: **🗓 For the Month**
+  - Four cards: theme of the month, main challenge, support, result/outcome.
 
-- **`help_command(update, context)`**
-  - Обработчик команды `/help`.
-  - Выводит список команд и короткое описание каждой.
-  - Удобно, если человек забыл, что умеет бот.
+- **Situation Spread**
+  - Command: `/situation` or `/situation your question`
+  - Provides three cards: what is happening, root cause, advice.
+  - The question can be added as text after the command—it will be logged.
 
-- **`card(update, context)`**
-  - Обработчик команды `/card` (карта дня).
-  - Случайно выбирает одну карту из `TAROT_DECK` и отправляет её название и значение.
+- **Choice Spread**
+  - Command: `/choice` or `/choice option A / option B`
+  - Three cards: card for the first option, card for the second option, and an advice card.
 
-- **`three(update, context)`**
-  - Обработчик команды `/three` (расклад из трёх карт).
-  - Берёт три разные карты (`random.sample`) и подписывает их как:
-    - Прошлое
-    - Настоящее
-    - Будущее
-  - Возвращает одно сообщение с красиво оформленным раскладом.
+- **Help**
+  - Command: `/help`
+  - Shows a list of all commands and briefly explains what they do.
 
-- **`love(update, context)`**
-  - Обработчик команды `/love` (расклад на любовь).
-  - Вытягивает одну карту и добавляет текст-подсказку, что смотреть нужно на сферу отношений.
-
-- **`work(update, context)`**
-  - Обработчик команды `/work` (расклад на работу и финансы).
-  - Вытягивает одну карту и делает акцент на сфере работы, проектов и денег.
-
-- **`feedback(update, context)`**
-  - Обработчик команды `/feedback ваш текст`.
-  - Если текст не передан, бот объясняет, как правильно оставить отзыв.
-  - Если текст есть:
-    - Собирает текст отзыва.
-    - Берёт `user_id` и `username` пользователя.
-    - Записывает строку в файл `feedbacks.txt` в формате:
-      - `[дата-в-UTC] user_id=..., @username: текст отзыва`.
-    - Отправляет пользователю благодарность за фидбэк.
-
-- **`main()`**
-  - Точка входа в приложение.
-  - Проверяет, что `TOKEN` задан (иначе выбрасывает понятную ошибку).
-  - Создаёт `Application` из `python-telegram-bot`.
-  - Регистрирует обработчики команд:
-     - `/start`, `/help`, `/card`, `/three`, `/love`, `/work`, `/month`, `/situation`, `/choice`, `/feedback`.
-  - Запускает бота в режиме `run_polling()` — бот сам периодически опрашивает Telegram и получает новые сообщения.
+- **Feedback**
+  - Command: `/feedback your text`
+  - Saves feedback to a file `feedbacks.txt` next to the bot (for the bot author).
 
 ---
 
-## Как мы создавали проект (шаги с нуля)
+## Project Structure
 
-Ниже — краткий конспект, как развернуть этот же проект у себя или на другом компьютере.
+The project is organized into modules for better code organization:
 
-### 1. Установить Python
+```
+TarotTelegramBot/
+├── bot.py                 # Entry point, handler registration
+├── config.py              # Configuration and token loading
+├── data/
+│   └── tarot_deck.py      # Tarot card deck and types
+├── handlers/
+│   ├── commands.py        # Command handlers (start, help, feedback)
+│   └── spreads.py         # Card spread handlers
+├── utils/
+│   ├── keyboard.py        # Keyboard creation
+│   └── logging.py         # Spread logging
+├── .env-example           # Example environment variables file
+├── .gitignore             # Git ignored files
+├── requirements.txt       # Project dependencies
+└── README.md              # This file
+```
 
-- Скачать Python с официального сайта (`python.org`) и установить.
-- Важно: при установке на Windows включить галочку «Add Python to PATH».
+- **`bot.py`** — Main file that starts the bot and registers all command handlers.
+- **`config.py`** — Loads the bot token from environment variables (`.env` file).
+- **`data/tarot_deck.py`** — Contains the Tarot card deck (`TAROT_DECK`) and `TarotCard` type.
+- **`handlers/commands.py`** — Handlers for basic commands: `/start`, `/help`, `/feedback`.
+- **`handlers/spreads.py`** — Handlers for all spreads: `/card`, `/three`, `/love`, `/work`, `/month`, `/situation`, `/choice`, as well as button press handling.
+- **`utils/keyboard.py`** — `main_keyboard()` function for creating the bot's main keyboard.
+- **`utils/logging.py`** — `log_spread()` function for logging spreads to `spreads.log` file.
 
-Проверка в терминале:
+---
+
+## Installation and Setup
+
+### 1. Install Python
+
+- Download Python from the official website (`python.org`) and install it.
+- Important: When installing on Windows, check the box "Add Python to PATH".
+
+Check in terminal:
 
 ```bash
 python --version
 ```
 
-Если выводит версию (например, `Python 3.11.x`) — всё хорошо.
+If it outputs a version (for example, `Python 3.11.x`)—everything is fine.
 
-### 2. Создать папку проекта
+### 2. Clone or download the project
 
-Например, на рабочем столе:
+If the project is already on GitHub:
 
-- Папка: `TarotTelegramBot`
-- Внутри лежат файлы:
-  - `bot.py`
-  - `requirements.txt`
-  - `README.md`
+```bash
+git clone https://github.com/your-username/TarotTelegramBot.git
+cd TarotTelegramBot
+```
 
-### 3. Виртуальное окружение (Windows, PowerShell)
+Or download the archive and extract it to the desired folder.
 
-В PowerShell из папки проекта (для Windows):
+### 3. Create a virtual environment (Windows, PowerShell)
+
+In PowerShell from the project folder:
 
 ```powershell
-cd "C:\Users\Katerina\Desktop\TarotTelegramBot"
+cd "C:\Users\YourName\Desktop\TarotTelegramBot"
 py -m venv .venv
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 .\.venv\Scripts\Activate.ps1
 ```
 
-В начале строки должно появиться `(.venv)` — это значит, что окружение активировано.
+The beginning of the line should show `(.venv)`—this means the environment is activated.
 
-### 4. Установить зависимости
+### 4. Install dependencies
 
-Файл `requirements.txt` уже содержит нужные библиотеки (главное — `python-telegram-bot`).
+The `requirements.txt` file contains the necessary libraries (mainly `python-telegram-bot`).
 
-В активированном окружении:
+In the activated environment:
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-### 5. Создать бота в Telegram и получить токен
+### 5. Create a bot in Telegram and get a token
 
-1. Открыть в Telegram пользователя `@BotFather`.
-2. Написать ему команду `/newbot`.
-3. Придумать читаемое имя бота (можно на русском).
-4. Придумать `username` бота, который заканчивается на `bot` (например, `TarotForFriendBot`).
-5. BotFather пришлёт токен вида `123456789:AA...` — это секретный ключ.
+1. Open the user `@BotFather` in Telegram.
+2. Send him the command `/newbot`.
+3. Come up with a readable bot name (can be in Russian).
+4. Come up with a bot `username` that ends with `bot` (for example, `TarotForFriendBot`).
+5. BotFather will send a token like `123456789:AA...`—this is the secret key.
 
-**Важно:** токен нельзя выкладывать на GitHub, в чаты и т.п.
+### 6. Set up environment variables
 
-### 6. Задать токен через переменную окружения
+Create a `.env` file in the project root (copy `.env-example`):
 
-В том же PowerShell, где активировано окружение:
-
-```powershell
-$env:BOT_TOKEN="СЮДА_ВСТАВИТЬ_ТОКЕН_ОТ_BOTFATHER"
+```env
+BOT_TOKEN=your_token_from_BotFather
 ```
 
-На время этой сессии терминала бот будет использовать этот токен.
+Or set the environment variable in PowerShell:
 
-### 7. Запустить бота
+```powershell
+$env:BOT_TOKEN="your_token_from_BotFather"
+```
 
-Всё ещё в той же сессии PowerShell:
+### 7. Start the bot
+
+Still in the same PowerShell session:
 
 ```powershell
 python bot.py
 ```
 
-Если всё прошло успешно:
+If everything is successful:
 
-- В консоли будет выведено, что бот запущен и слушает обновления.
-- В Telegram можно найти бота по его `@username`, нажать **Start** и пробовать команды и кнопки.
+- The console will output that the bot has started and is listening for updates.
+- In Telegram, you can find the bot by its `@username`, press **Start**, and try the commands and buttons.
+
+---
+
+## Card Data Structure
+
+Each card in `TAROT_DECK` is a dictionary with fields:
+
+- `name` — card name
+- `general` — general meaning
+- `love` — meaning in love and relationships
+- `work` — meaning in work and self-realization
+- `finance` — meaning in the financial sphere
+- `advice` — general advice from the card
+
+The structure is easy to expand by adding new cards to `data/tarot_deck.py`.
+
+---
+
+This project is created for educational purposes. Feel free to use it!
