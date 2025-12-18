@@ -22,6 +22,7 @@ def main():
     app.add_handler(CommandHandler("month", spreads.month))
     app.add_handler(CommandHandler("situation", spreads.situation))
     app.add_handler(CommandHandler("choice", spreads.choice))
+    app.add_handler(CommandHandler("deck", spreads.deck))
 
     # Обработчик текстовых сообщений (кнопки)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, spreads.handle_keyboard_text))

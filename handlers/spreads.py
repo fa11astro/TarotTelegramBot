@@ -115,6 +115,29 @@ async def choice(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("\n".join(lines))
 
 
+async def deck(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Demonstrates unordered data types (set) - get unique card categories
+    card_categories = set()
+    for card in TAROT_DECK:
+        # Extract first word as category (for demonstration)
+        if " " in card["name"]:
+            category = card["name"].split()[0]
+            card_categories.add(category)
+    
+    # Create a copy and sort by card name (demonstrates sorting)
+    sorted_deck = sorted(TAROT_DECK, key=lambda x: x["name"])
+    
+    lines = ["📚 Вся колода карт (отсортировано по имени):\n"]
+    for card in sorted_deck:
+        lines.append(f"• {card['name']}")
+    
+    # Show unique categories (demonstrates set/unordered data type)
+    if card_categories:
+        lines.append(f"\nКатегории карт: {', '.join(sorted(card_categories))}")
+    
+    await update.message.reply_text("\n".join(lines))
+
+
 async def handle_keyboard_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message or not update.message.text:
         return
